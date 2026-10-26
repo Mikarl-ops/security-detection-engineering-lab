@@ -1,0 +1,23 @@
+title: Linux SSH Failed Authentication Burst
+id: 61e41e82-f9e6-4f06-9cc0-922b2f0fb16c
+status: experimental
+description: Detect a burst of failed SSH authentication attempts from one source.
+author: Mikael Beck
+date: 2026/10/26
+logsource:
+  product: linux
+  service: sshd
+detection:
+  selection:
+    message|contains:
+      - "Failed password for"
+      - "Invalid user"
+  timeframe: 5m
+  condition: selection | count() by SourceIp >= 5
+falsepositives:
+  - Repeated mistakes by a legitimate user
+  - Misconfigured automation or deployment credentials
+level: medium
+tags:
+  - attack.t1110.001
+  - attack.credential_access
